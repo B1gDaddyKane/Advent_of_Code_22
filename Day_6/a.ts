@@ -19,4 +19,4 @@ stream.forEach((s, index) => {
     }
 });
 
-console.log("The marker:", marker,"appeared after:",appearedAt,"characters")
+console.log("The marker:", marker, "appeared after:", appearedAt, "characters")

@@ -1,11 +1,10 @@
 interface directoryInterface {
-    [dirName: string]: number
+    [dirName: string]: number;
 }
 
 const input = await Deno.readTextFile("Day_7/input.txt");
 
 const commands = input.split("\r\n");
-let sum = 0;
 const path : string[] = [];
 const directories: directoryInterface = {};
 
@@ -26,8 +25,14 @@ commands.forEach(c => {
     }
 });
 
+const root = directories["/"];
+let list: number[] = [];
+
 for (const dir in directories) {
-    sum += directories[dir] <= 100000 ? directories[dir] : 0;
+    // Find the smallest dir that when delleted will fullfill the space requirements of: 40000000 = 70000000-30000000
+    if(root - directories[dir] <= 40000000 ) {
+        list.push(directories[dir]);
+    }
 }
 
-console.log(sum);
+console.log(list.sort((a, b) => a + b).pop())
