@@ -1,29 +1,35 @@
 const input = await Deno.readTextFile("Day_8/input.txt");
 const rows = input.split("\r\n").map(x => x.split("").map(x => parseInt(x)));
 
-const test = [[3,0,3,7,3],[2,5,5,1,2],[6,5,3,3,2],[3,3,5,4,9],[3,5,3,9,0]]
 let BestScenicScore = 0;
 
-test.forEach((r, index) => {
-    r.forEach((e, i) => {
-        const c = test.map(row => row[i]).flatMap(x => x);
+const scenicScore = (arr: number[], index: number): number => {
+    let scenicLeft = 0;
+    let scenicRight = 0;
 
-        const scenicLeft = r.slice(0, i).findIndex(x => x >= e) == -1 
-        ? (r.slice(0,i).length == 0 ? r.slice(0,i).length : r.slice(0,i).length - 1)
-        : r.slice(0, i).findIndex(x => x >= e) + 1;
+    for (let i = index - 1; i >= 0; i--) {
+        scenicLeft++;
+        if(arr[i] >= arr[index]) break;    
+    }
 
-        const scenicRight = r.slice(i+1, r.length).findIndex(x => x >= e) == -1 
-        ? (r.slice(i+1, r.length).length == 0 ? r.slice(i+1, r.length).length : r.slice(i+1, r.length).length - 1)
-        : r.slice(i+1, r.length).findIndex(x => x >= e) + 1;
+    for (let i = index + 1; i < arr.length; i++) {
+        scenicRight++;
+        if(arr[i] >= arr[index]) break;
+    }
 
-        const scenicUp = c.slice(0, index).findIndex(x => x >= e) == -1 
-        ? (c.slice(0, index).length == 0 ? c.slice(0, index).length : c.slice(0, index).length - 1)
-        : c.slice(0, index).findIndex(x => x >= e) + 1;
+    return scenicLeft * scenicRight;
+}
 
-        const scenicDown = c.slice(index+1, c.length).findIndex(x => x >= e) == -1 
-        ? (c.slice(index+1, c.length).length == 0 ? c.slice(index+1, c.length).length : c.slice(index+1, c.length).length - 1)
-        : c.slice(index+1, c.length).findIndex(x => x >= e) + 1;
-        BestScenicScore = (scenicLeft * scenicRight * scenicUp * scenicDown) > BestScenicScore ? (scenicLeft * scenicRight * scenicUp * scenicDown) : BestScenicScore;
+rows.forEach((r, index) => {
+    r.forEach((_e, i) => {
+        const c = rows.map(row => row[i]).flatMap(x => x);
+
+        const horScore = scenicScore(r, i);
+        const verScore = scenicScore(c, index);
+        
+        const currentScore = horScore * verScore;
+
+        BestScenicScore = currentScore > BestScenicScore ? currentScore : BestScenicScore;
     });
 });
  console.log(BestScenicScore)
