@@ -13,7 +13,7 @@ for(let i = 0; i < 10000; i++) {
         for(let j = 0; 0 < monkeys[h].StartingItems.length; j++) {
             let worryLevel = monkeys[h].StartingItems.reverse().pop()!;
             worryLevel = monkeys[h].Operation(worryLevel);
-            worryLevel = Math.floor(worryLevel / 3);
+            worryLevel %= 9699690;
             activeMonkeys[h] += 1;
             if(monkeys[h].Test(worryLevel)) monkeys[monkeys[h].ifTrue].StartingItems.push(worryLevel)
             else monkeys[monkeys[h].ifFalse].StartingItems.push(worryLevel);
