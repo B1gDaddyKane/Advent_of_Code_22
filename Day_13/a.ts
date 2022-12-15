@@ -1,23 +1,33 @@
-const input  = await Deno.readTextFile("Day_13/test.txt");
+const input  = await Deno.readTextFile("Day_13/input.txt");
+type Packet = (number | Packet)[];
+const pairs = input.split("\r\n\r\n").map(lines => lines.split("\n").map(_ => JSON.parse(_)) as [Packet, Packet]);
 
-const pairs = input.split("\r\n")
-let currentIndex = 0;
-let sum = 0;
+const comparePairs = (pair1: Packet, pair2: Packet) : boolean => {
+    while(pair1.length > 0) {
+        if(pair2.length < 1) return false;
 
-const MakeToArray = (str: string): string[] => {
-    str.split("").forEach(s => {
-        if(+s)
-    })
-}
+        const left = pair1.shift()!;
+        const right = pair2.shift()!;
 
-for (let index = 0; index < pairs.length; index += 3) {
-    currentIndex++;
-    for (let i = 0; i < pairs[index].length; i++) {
-        if(pairs[index][i] == "[" && pairs[index+1][i] == "[") continue;
-        if(+pairs[index][i] > +pairs[index+1][i]) break;
+        if(typeof left === 'number' && typeof right === 'number')
+        {
+            if(left < right) return true;
+            if(left > right) return false;
+        } else {
+            const isOrdered = comparePairs(
+                    Array.isArray(left) ? left : [left], 
+                    Array.isArray(right) ? right : [right] as Packet
+                );
+            if(isOrdered !== undefined) return isOrdered;
+        }
     }
 
-    console.log(`Pair 1`,pairs[index],`Pair 2`,pairs[index+1]);
-    sum += currentIndex;
+    return true;
 }
-console.log(sum);
+
+let sumOfIndices = 0;
+pairs.forEach(([pair1,pair2],index) => {
+    const res = comparePairs(pair1, pair2);
+    if(res) sumOfIndices += index + 1
+});
+console.log(sumOfIndices);
